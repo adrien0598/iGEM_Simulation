@@ -113,4 +113,147 @@ ggplot(gg2[gg2$type == "A:T -> G:C",]) +
                             "TadA*-CGG", "evoAPOBEC1-BE4max-CGG", "evo-CDA1-BE4max-CGG",
                             "ABE8.20-m-CGG"))
 
+# mutations rate (validation)
+gg4 = gg2[gg2$nom %in% c("AID-T7", "pmCDAI-T7", "rAPOBEC1-T7", "TadA*-T7"),]
+id = c("AID-T7", "pmCDAI-T7", "rAPOBEC1-T7", "TadA*-T7", "AID-T7", "pmCDAI-T7", "rAPOBEC1-T7", "TadA*-T7")
+activ = c("C -> T", "C -> T", "C -> T", "T -> C", "G -> A", "G -> A", "G -> A", "A -> G")
+alpha = c()
+for (i in c("AID-T7", "pmCDAI-T7", "rAPOBEC1-T7")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "C" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "C" & gg4$nom == i]))
+}
+for (i in c("TadA*-T7")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "T" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "T" & gg4$nom == i]))
+}
+for (i in c("AID-T7", "pmCDAI-T7", "rAPOBEC1-T7")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "G" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "G" & gg4$nom == i]))
+}
+for (i in c("TadA*-T7")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "A" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "A" & gg4$nom == i]))
+}
+
+#plot
+gg4 = data.frame(Mutator = id, Activity = activ, Mutation_rate = alpha)
+ggplot(gg4) +
+  aes(x = Mutator, y = Mutation_rate, fill = Activity) + 
+  geom_col(position = "dodge") +
+  xlab("Mutator") +
+  ylab("Mutation rate") +
+  theme(axis.text.x = element_text(angle=45, hjust = 1)) +
+  scale_x_discrete(name ="Mutator", 
+                   limits=c("AID-T7", "pmCDAI-T7", "rAPOBEC1-T7", 
+                            "TadA*-T7"))
+
+#graphe robustesse
+esti = c(0.00354, 0.0564, 0.00553, 0.00452, 0.00360, 0.00664, 0.00972, 0.000709) #estimated values (spanich publication)
+gg4[["Estimation"]] = esti
+ggplot(gg4) +
+  aes(x = Estimation, y = Mutation_rate/1.23 - 0.0065) +
+  xlab("Estimation at g = 3 (literature)") +
+  ylab("Corrected estimation at g = 30") +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  geom_abline(slope = 1, intercept = 0, linetype="dashed", color = "red")
+# wo 
+esti = c(0.00354, 0.00553, 0.00452, 0.00360, 0.00664, 0.00972, 0.000709) #estimated values (spanich publication)
+gg4 = gg4[-2,]
+gg4[["Estimation"]] = esti
+ggplot(gg4) +
+  aes(x = Estimation, y = Mutation_rate) +
+  ggtitle("Model accuracy") +
+  xlab("Estimation at 3g (literature)") +
+  ylab("Estimation at 30g (our NGS results)") +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+
+# other estimationslimits=c("pSEVA221", "T7", "AID-T7", "pmCDAI-T7", "rAPOBEC1-T7", 
+
+gg4 = gg2[gg2$nom %in% c("evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7",
+                         "ABE8.20-m-T7"),]
+id = c("evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7","ABE8.20-m-T7", 
+       "evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7","ABE8.20-m-T7")
+activ = c("C -> T", "C -> T", "T -> C", 
+          "G -> A", "G -> A", "A -> G")
+alpha = c()
+for (i in c("evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "C" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "C" & gg4$nom == i]))
+}
+for (i in c("ABE8.20-m-T7")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "T" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "T" & gg4$nom == i]))
+}
+for (i in c("evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "G" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "G" & gg4$nom == i]))
+}
+for (i in c("ABE8.20-m-T7")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "A" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "A" & gg4$nom == i]))
+}
+alpha = alpha/1.23 -0.0065 # esti
+alpha
+
+# final
+gg4 = gg2[gg2$nom %in% c("AID-CGG", "pmCDA1-CGG", "rAPOBEC1-CGG", "TadA*-CGG", 
+                         "evoAPOBEC1-BE4max-CGG","evo-CDA1-BE4max-CGG","ABE8.20-m-CGG"),]
+id = c("AID-CGG", "pmCDA1-CGG", "rAPOBEC1-CGG",
+       "TadA*-CGG", "evoAPOBEC1-BE4max-CGG", "evo-CDA1-BE4max-CGG",
+       "ABE8.20-m-CGG")
+activ = c("C -> T", "C -> T","C -> T", "T -> C", "C -> T","C -> T", "T -> C", 
+          "G -> A", "G -> A", "G -> A","A -> G", "G -> A", "G -> A","A -> G")
+alpha = c()
+for (i in c("AID-CGG", "pmCDA1-CGG", "rAPOBEC1-CGG")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "C" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "C" & gg4$nom == i]))
+}
+for (i in c("TadA*-CGG")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "T" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "T" & gg4$nom == i]))
+}
+for (i in c("evoAPOBEC1-BE4max-CGG", "evo-CDA1-BE4max-CGG")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "C" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "C" & gg4$nom == i]))
+}
+for (i in c("ABE8.20-m-CGG")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "T" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "T" & gg4$nom == i]))
+}
+for (i in c("AID-CGG", "pmCDA1-CGG", "rAPOBEC1-CGG")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "G" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "G" & gg4$nom == i]))
+}
+for (i in c("TadA*-CGG")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "A" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "A" & gg4$nom == i]))
+}
+for (i in c("evoAPOBEC1-BE4max-CGG", "evo-CDA1-BE4max-CGG")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "G" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "G" & gg4$nom == i]))
+}
+for (i in c("ABE8.20-m-CGG")){
+  alpha = c(alpha, sum(gg4$Occurences[gg4$Ref == "A" & gg4$nom == i])/sum(gg4$Depth[gg4$Ref == "A" & gg4$nom == i]))
+}
+
+# the graph
+gg0 = data.frame(Mutator = c("AID-T7", "pmCDAI-T7", "rAPOBEC1-T7", "TadA*-T7", 
+                             "AID-T7", "pmCDAI-T7", "rAPOBEC1-T7", "TadA*-T7",
+                             "evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7","ABE8.20-m-T7", 
+                             "evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7","ABE8.20-m-T7",
+                             "AID-CGG", "pmCDA1-CGG", "rAPOBEC1-CGG", "TadA*-CGG", 
+                             "evoAPOBEC1-BE4max-CGG","evo-CDA1-BE4max-CGG","ABE8.20-m-CGG",
+                             "AID-CGG", "pmCDA1-CGG", "rAPOBEC1-CGG", "TadA*-CGG", 
+                             "evoAPOBEC1-BE4max-CGG","evo-CDA1-BE4max-CGG","ABE8.20-m-CGG"),
+                 Activity = c("C -> T", "C -> T", "C -> T", "T -> C", 
+                              "G -> A", "G -> A", "G -> A", "A -> G",
+                              "C -> T", "C -> T", "T -> C", 
+                              "G -> A", "G -> A", "A -> G",
+                              "C -> T", "C -> T","C -> T", "T -> C", "C -> T","C -> T", "T -> C", 
+                              "G -> A", "G -> A", "G -> A","A -> G", "G -> A", "G -> A","A -> G"),
+                 Mutation_rate = alpha)
+
+ggplot(gg0) +
+  aes(x = Mutator, y = Mutation_rate, fill = Activity) + 
+  geom_col() +
+  xlab("Mutator") +
+  ylab("Mutation rate") +
+  theme(axis.text.x = element_text(angle=45, hjust = 1)) +
+  scale_x_discrete(name ="Mutator", 
+                   limits=c("AID-T7", "pmCDAI-T7", "rAPOBEC1-T7", 
+                            "TadA*-T7", "evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7",
+                            "ABE8.20-m-T7", "", "AID-CGG", "pmCDA1-CGG", "rAPOBEC1-CGG",
+                            "TadA*-CGG", "evoAPOBEC1-BE4max-CGG", "evo-CDA1-BE4max-CGG",
+                            "ABE8.20-m-CGG"))
+
+
+
 
