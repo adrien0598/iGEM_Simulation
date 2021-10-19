@@ -29,7 +29,7 @@ mutators = c("T7", "AID-T7", "pmCDAI-T7", "rAPOBEC1-T7",
              "TadA*-T7", "CGG", "AID-CGG", "pmCDA1-CGG", "rAPOBEC1-CGG",
              "TadA*-CGG", "evoAPOBEC1-BE4max-CGG", "evo-CDA1-BE4max-CGG",
              "ABE8.20-m-CGG", "evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7",
-             "ABE8.20-m-T7", "221", "pSEVA471")
+             "ABE8.20-m-T7", "pSEVA221", "pSEVA471")
 id = c("100", "101", "102", "103", "104", "109", "110", "111", "112",
        "113", "114", "115", "116", "117", "118", "119", "221", "471")
 trans = data.frame(id = id, mut = mutators)
@@ -46,8 +46,14 @@ ggplot(gg) +
   xlab("Mutator") +
   ylab("variant read / total") +
   geom_jitter() +
-  geom_boxplot(alpha = 0.5) +
-  theme(axis.text.x = element_text(angle=45, hjust = 1))
+  geom_boxplot(alpha = 0.5, outlier.size=0, outlier.shape=NA) +
+  theme(axis.text.x = element_text(angle=45, hjust = 1)) +
+  scale_x_discrete(name ="Mutator", 
+                   limits=c("pSEVA221", "T7", "AID-T7", "pmCDAI-T7", "rAPOBEC1-T7", 
+                            "TadA*-T7", "evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7",
+                            "ABE8.20-m-T7", "pSEVA471", "CGG", "AID-CGG", "pmCDA1-CGG", "rAPOBEC1-CGG",
+                            "TadA*-CGG", "evoAPOBEC1-BE4max-CGG", "evo-CDA1-BE4max-CGG",
+                            "ABE8.20-m-CGG"))
 
 gg2 = data
 nom = c()
@@ -98,7 +104,13 @@ ggplot(gg2[gg2$type == "A:T -> G:C",]) +
   xlab("Mutator") +
   ylab("variant read / total") +
   geom_jitter() +
-  geom_boxplot(alpha = 0.5) +
-  theme(axis.text.x = element_text(angle=45, hjust = 1))
+  geom_boxplot(alpha = 0.5, outlier.size=0, outlier.shape=NA) +
+  theme(axis.text.x = element_text(angle=45, hjust = 1)) +
+  scale_x_discrete(name ="Mutator", 
+                   limits=c("pSEVA221", "T7", "AID-T7", "pmCDAI-T7", "rAPOBEC1-T7", 
+                            "TadA*-T7", "evoAPOBEC1-BE4max-T7", "evo-CDA1-BE4max-T7",
+                            "ABE8.20-m-T7", "pSEVA471", "CGG", "AID-CGG", "pmCDA1-CGG", "rAPOBEC1-CGG",
+                            "TadA*-CGG", "evoAPOBEC1-BE4max-CGG", "evo-CDA1-BE4max-CGG",
+                            "ABE8.20-m-CGG"))
 
 
